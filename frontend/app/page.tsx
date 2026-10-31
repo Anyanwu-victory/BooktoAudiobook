@@ -1,68 +1,15 @@
-
-import { features } from "./_data/features";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import Image from "next/image";
+import { listPublished } from "@/lib/library";
+import Catalog from "@/components/Catalog";
 
-export default function Home() {
-  return (
-    <main className="flex-1 overflow-scroll p-2 lg:p-5 bg-[url(/audioBook.jpg)] ">
-      <div className="bg-white py-24 sm:py-32 rounded-md drop-shadow-xl">
-        <div className="flex flex-col justify-center items-center mx-auto container px-6 lg:px-8">
-          <div className="mx-auto max-w-2xl sm:text-center">
-            <h2 className="text-base font-serif leading-7 text-[#F4B80B]">
-              Your AI-Powered Reading Companion</h2>
-            <p className="mt-2 text-3xl font-bold tracking-tight text-gray-900 sm:text-5xl">Transform Your PDFs into Interactive Conversations</p>
-            <p className="mt-6 text-lg leading-8 text-gray-600">
-              Introducing{" "}
-              <span className="font-bold text-[#F4B80B]">Book-to-Audiobook</span>
-              <br />
-              <br /> Upload your document, and our chatbot will answer questions, summarize content and answer all your Questions.
-              Ideal for everyone.<span className="text-[#F4B80B] font-bold">NexusAI</span>{" "}
-              turns static documents into {" "}
-              <span className="font-bold">
-                dynamic conversations
-              </span>,
-              enhancing your productivity
-            </p>
-          </div>
-          <Button asChild className="mt-10">
-            <Link href={"/dashboard"}>
-              Get Started</Link>
-          </Button>
-        </div>
-        <div className="relative overflow-hidden pt-16">
+export const dynamic = "force-dynamic";
 
-          <div className="mx-auto max-w-7xl px-6 lg:px-8" >
-            <Image alt="Application Screenshot"
-              src={"/audio.jpg"}
-              width={2432}
-              height={1442}
-              className="mb-[-0%] rounded-xl shadow-2xl ring-1 ring-gray-900/10"
-
-            />
-            <div aria-hidden="true" className="relative">
-              <div className="absolute bottom-0  bg-gradient-to-t from-white/90 pt-[5%]">
-
-              </div>
-            </div>
-          </div>
-
-        </div>
-        <div className="mx-auto mt-16 max-w-7xl px-6 sm:mt-20 md:mt-24 lg:px-8">
-          <dl className="mx-auto grid max-w-2xl grid-cols-1 gap-x-6 gap-y-10 text-balance leading-7 text-gray-600 sm:grid-cols-2 lg:mx-0 lg:max-w-none lg:grid-cols-3 lg:gap-x-8 lg:gap-y-16">{
-            features.map((feature, index) => (
-              <div key={index} className="relative pl-9">
-                <dt className="inline font-semibold text-gray-900"><feature.icon
-                  className="absolute left-1 top-1 h-5 w-5 text-indigo-600"
-                /></dt>
-
-                <dd>{feature.description}</dd>
-              </div>
-            ))
-          }</dl>
-        </div>
-      </div>
-    </main>
-  );
+export default async function Home() {
+  const books = await listPublished();
+  const cards = books.map(({ id, title, author, description, subject, language, chapters }) => ({ id, title, author, description, subject, language, parts: chapters.length }));
+  return <>
+    <section className="hero shell"><div className="hero-copy"><span className="eyebrow">The school listening library</span><h1>Every story deserves to be <em>heard.</em></h1><p>Browse books your school has shared, open a chapter, and listen at your own pace. No student account needed.</p><div className="hero-actions"><a className="button button-primary" href="#catalog">Explore the library</a><Link className="text-link" href="/submit">Share a book <span aria-hidden="true">↗</span></Link></div></div><div className="hero-art" aria-hidden="true"><div className="sound-ring ring-one" /><div className="sound-ring ring-two" /><div className="art-book"><span>VOXA</span><strong>READ<br />WITH<br />YOUR<br />EARS.</strong><small>YOUR SCHOOL LIBRARY</small></div><div className="art-caption"><span className="play-dot">▶</span><span>Pick a book.<br /><strong>Press play.</strong></span></div></div></section>
+    <section className="catalog-section" id="catalog"><div className="shell"><div className="section-heading"><div><span className="eyebrow">On the shelves</span><h2>Explore books</h2></div><p>{books.length} {books.length === 1 ? "book" : "books"} ready to listen</p></div><Catalog books={cards} /></div></section>
+    <section className="contribute shell"><div><span className="eyebrow">Help the library grow</span><h2>Have a book your school can share?</h2><p>Submit it for review. A librarian will check it before students can listen.</p></div><Link className="button button-dark" href="/submit">Submit a book <span aria-hidden="true">↗</span></Link></section>
+  </>;
 }

@@ -1,30 +1,9 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
+import Link from "next/link";
 import "./globals.css";
-import { ClerkProvider } from "@clerk/nextjs";
-import { Toaster } from "@/components/ui/toaster"
 
+export const metadata: Metadata = { title: "Voxa | School listening library", description: "Listen to books from your school library." };
 
-export const metadata: Metadata = {
-  title: "Book to Audiobook",
-  description: "Store and Listen to your Books anywhere anytime in (PDF, EPUD)",
-};
-
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
-  return (
-    <ClerkProvider>
-      <html lang="en">
-        <body
-          className="min-h-screen h-screen overflow-hidden flex flex-col"
-        >
-          {/* <Toaster /> */}
-          
-          {children}
-        </body>
-      </html>
-    </ClerkProvider>
-  );
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  return <html lang="en"><body><header className="site-header"><div className="shell nav-wrap"><Link className="brand" href="/" aria-label="Voxa home"><span className="brand-icon">V</span><span>voxa<span className="brand-period">.</span></span></Link><nav aria-label="Main navigation"><Link href="/#catalog">Library</Link><Link href="/submit">Submit a book</Link><Link className="admin-link" href="/admin">Librarian</Link></nav></div></header><main>{children}</main><footer className="site-footer"><div className="shell"><span className="brand footer-brand">voxa<span className="brand-period">.</span></span><p>Books for every kind of learner.</p><span>Made for your school library</span></div></footer></body></html>;
 }
